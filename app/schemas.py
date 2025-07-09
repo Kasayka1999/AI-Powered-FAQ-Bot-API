@@ -1,13 +1,13 @@
-from pydantic import BaseModel, Field
+from sqlmodel import SQLModel
 
-class UserRequest(BaseModel):
-    username: str = Field(min_length=0,  max_length=20)
-    email: str
-    full_name: str
-    password: str
 
-class UserResponse(BaseModel):
+class UserCreate(SQLModel):
     username: str
     email: str
+    full_name: str | None = None
+    password: str  # This will be hashed before storing
+
+
+class UserResponse(SQLModel):
+    username: str
     full_name: str
-    disabled: bool

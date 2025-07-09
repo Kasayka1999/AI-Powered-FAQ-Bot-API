@@ -9,7 +9,7 @@ from passlib.context import CryptContext
 from pydantic import BaseModel
 from app.models import User
 from app.schemas import UserResponse
-from app.database import get_db
+from app.database import SessionDep
 from dotenv import load_dotenv
 import os
 
@@ -46,10 +46,6 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-
 def get_user(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
 
@@ -75,7 +71,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)],
-                           db: Annotated[Session, Depends(get_db)]):
+                           db: SessionDep):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -106,7 +102,7 @@ async def get_current_active_user(
 @router.post("/token")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    db: Annotated[Session, Depends(get_db)],
+    db: SessionDep,
 ) -> Token:
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:

@@ -1,7 +1,6 @@
 fastapi
-sqlalchemy
 datetime
 pyjwt
 "passlib[bcrypt]"
-pydantic
 'bcrypt<4.1.0'
+sqlmodel
