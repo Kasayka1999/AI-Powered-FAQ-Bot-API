@@ -1,3 +1,7 @@
 # Ignore .env in all subfolders
 *.env
 app/.env
+
+# Ignore JetBrains IDE config
+.idea/
+
