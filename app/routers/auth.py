@@ -9,7 +9,7 @@ from passlib.context import CryptContext
 from pydantic import BaseModel
 from app.models import User
 from app.schemas import UserResponse
-from app.database import get_db
+from app.database import get_session
 from dotenv import load_dotenv
 import os
 
