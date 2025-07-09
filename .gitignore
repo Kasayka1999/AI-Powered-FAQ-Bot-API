@@ -1,7 +1,14 @@
-# Ignore .env in all subfolders
+# Python cache
+__pycache__/
+*.py[cod]
+
+# macOS
+.DS_Store
+
+# Env files
+.env
 *.env
-app/.env
 
-# Ignore JetBrains IDE config
+# IDEs
 .idea/
-
+.vscode/
