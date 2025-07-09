@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends
+from http.client import HTTPException
+
+from fastapi import APIRouter, Depends, HTTPException
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from app.schemas import UserRequest
@@ -15,6 +17,12 @@ router = APIRouter(
 
 @router.post("/create")
 async def create_user(user_request: UserRequest, db: Session = Depends(get_db)):
+    if db.query(User).filter(User.username == user_request.username).first():
+        raise HTTPException(status_code=409, detail="Username already exists!")
+
+    if db.query(User).filter(User.email == user_request.email).first():
+        raise HTTPException(status_code=409, detail="Email already exists!")
+
     hashed_password = pwd_context.hash(user_request.password)
     user = User(
         username=user_request.username,
