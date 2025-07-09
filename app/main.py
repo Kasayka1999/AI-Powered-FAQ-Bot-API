@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routers import auth, registration
+from app.routers import auth, registration
 
 
 app = FastAPI()

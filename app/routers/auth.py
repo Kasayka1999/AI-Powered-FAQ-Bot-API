@@ -7,9 +7,9 @@ import jwt
 from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
 from pydantic import BaseModel
-from ..models import User
-from ..schemas import UserResponse
-from ..database import get_db
+from app.models import User
+from app.schemas import UserResponse
+from app.database import get_db
 from dotenv import load_dotenv
 import os
 
