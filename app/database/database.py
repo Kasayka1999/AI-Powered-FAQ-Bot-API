@@ -1,5 +1,5 @@
 from typing import Annotated
-from sqlmodel import Session, create_engine
+from sqlmodel import Session, create_engine, SQLModel
 from fastapi import Depends
 
 
@@ -19,3 +19,5 @@ def get_session():
 SessionDep = Annotated[Session, Depends(get_session)]
 
 
+def create_db_and_tables():
+    SQLModel.metadata.create_all(engine)
