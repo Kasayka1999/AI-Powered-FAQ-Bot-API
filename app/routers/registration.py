@@ -2,9 +2,9 @@ from http.client import HTTPException
 
 from fastapi import APIRouter, HTTPException
 from passlib.context import CryptContext
-from app.models import User
-from app.schemas import UserCreate
-from app.database import SessionDep
+from app.models.user import User
+from app.schemas.user import UserCreate
+from app.database.database import SessionDep
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

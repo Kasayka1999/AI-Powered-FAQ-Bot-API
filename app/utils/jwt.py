@@ -1,63 +1,37 @@
-from datetime import datetime, timezone, timedelta
-from sqlalchemy.orm import Session
-from typing import Annotated
-from fastapi import Depends, APIRouter, HTTPException, status
+from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from typing import Annotated
 import jwt
 from jwt.exceptions import InvalidTokenError
-from passlib.context import CryptContext
-from pydantic import BaseModel
-from app.models import User
-from app.schemas import UserResponse
-from app.database import SessionDep
-from dotenv import load_dotenv
-import os
-
-load_dotenv()  # loads values from .env file
-
-#config
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+from sqlmodel import SQLModel
+from app.database.database import SessionDep
+from app.utils.hashing import verify_password
+from app.models.user import User
+from datetime import datetime, timedelta, timezone
+from app.config.config import SECRET_KEY, ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM
 
 
-
-class Token(BaseModel):
+class Token(SQLModel):
     access_token: str
     token_type: str
 
 
-class TokenData(BaseModel):
+class TokenData(SQLModel):
     username: str | None = None
-
-
-
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
 
-router = APIRouter(
-    prefix="/login",
-    tags=["Login"]
-)
-
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_user(db: Session, username: str):
+def get_user(db: SessionDep, username: str):
     return db.query(User).filter(User.username == username).first()
 
 
-def authenticate_user(db: Session, username: str, password: str):
+def authenticate_user(db: SessionDep, username: str, password: str):
     user = get_user(db, username)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
         return False
     return user
-
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
@@ -80,6 +54,8 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)],
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username = payload.get("sub")
+        print("Decoded payload:", payload)
+        print("Username in payload:", username)
         if username is None:
             raise credentials_exception
         token_data = TokenData(username=username)
@@ -98,8 +74,6 @@ async def get_current_active_user(
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-
-@router.post("/token")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: SessionDep,
@@ -116,12 +90,3 @@ async def login_for_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
-
-
-@router.get("/users/me/", response_model=UserResponse)
-async def read_users_me(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-):
-    return current_user
-
-
