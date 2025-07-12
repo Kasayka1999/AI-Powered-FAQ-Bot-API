@@ -13,11 +13,10 @@ class User(UserBase, table=True):
     hashed_password: str
     is_active: bool = Field(default=True)
     is_admin: bool = Field(default=False) 
-
+    organization_id: int | None = Field(default=None, foreign_key="organizations.id")
 
 class UserCreate(UserBase):
     password: str  # This will be hashed before storing
 
 class UserResponse(SQLModel):
     username: str
-
