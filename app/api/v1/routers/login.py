@@ -2,8 +2,7 @@ from typing import Annotated
 from fastapi import Depends, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
 from app.utils.jwt import login_for_access_token
-from app.models.user import User
-from app.schemas.user import UserResponse
+from app.api.models.user import UserResponse, User
 from app.database.database import SessionDep
 from app.utils.jwt import get_current_active_user, Token
 

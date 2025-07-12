@@ -1,12 +1,11 @@
 from fastapi import FastAPI
-from app.routers import registration, login
+from app.api.v1.router import master_router
 from app.database.database import create_db_and_tables
 
 
 app = FastAPI()
 
-app.include_router(login.router)
-app.include_router(registration.router)
+app.include_router(master_router)
 
 
 @app.on_event("startup")
