@@ -30,7 +30,6 @@ async def create_organization(organization: OrganizationCreate, current_user: An
 
     # Update user's organization_id
     current_user.organization_id = organization.id
-    db.add(current_user)
     db.commit()
     db.refresh(current_user)
 
