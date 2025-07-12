@@ -2,8 +2,7 @@ from http.client import HTTPException
 
 from fastapi import APIRouter, HTTPException
 from passlib.context import CryptContext
-from app.models.user import User
-from app.schemas.user import UserCreate
+from app.api.models.user import UserCreate, User
 from app.database.database import SessionDep
 
 
