@@ -4,11 +4,11 @@ from typing import Annotated
 import jwt
 from jwt.exceptions import InvalidTokenError
 from sqlmodel import SQLModel
-from app.database.database import SessionDep
+from app.api.dependencies import SessionDep
 from app.utils.hashing import verify_password
 from app.api.models.user import User
 from datetime import datetime, timedelta, timezone
-from app.config.config import SECRET_KEY, ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM
+from app.config import security_settings
 
 
 class Token(SQLModel):
@@ -40,7 +40,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, security_settings.JWT_SECRET, algorithm=security_settings.JWT_ALGORITHM)
     return encoded_jwt
 
 
@@ -52,7 +52,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)],
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, security_settings.JWT_SECRET, algorithms=[security_settings.JWT_ALGORITHM])
         username = payload.get("sub")
         print("Decoded payload:", payload)
         print("Username in payload:", username)
@@ -85,7 +85,7 @@ async def login_for_access_token(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(minutes=security_settings.JWT_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )

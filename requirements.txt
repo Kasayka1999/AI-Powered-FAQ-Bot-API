@@ -6,3 +6,7 @@ pyjwt
 sqlmodel
 passlib
 dotenv
+scalar
+pydantic_settings
+asyncpg
+greenlet
