@@ -1,4 +1,8 @@
-from sqlmodel import SQLModel, Field
+from sqlmodel import Relationship, SQLModel, Field
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.api.models.organization import Organization
 
 
 class UserBase(SQLModel):
@@ -14,6 +18,7 @@ class User(UserBase, table=True):
     is_active: bool = Field(default=True)
     is_admin: bool = Field(default=False) 
     organization_id: int | None = Field(default=None, foreign_key="organizations.id")
+    organization: "Organization" = Relationship(back_populates="user", sa_relationship={"uselist": False})
 
 class UserCreate(UserBase):
     password: str  # This will be hashed before storing
