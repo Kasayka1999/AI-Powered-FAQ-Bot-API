@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from typing import Annotated
 from fastapi import Depends, HTTPException
 from app.api.models.organization import OrganizationCreate, Organization
-from app.database.database import SessionDep
+from app.api.dependencies import SessionDep
 from app.api.models.user import User
 from app.utils.jwt import get_current_active_user
 from datetime import datetime

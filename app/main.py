@@ -1,17 +1,23 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.api.v1.router import master_router
-from app.database.database import create_db_and_tables
+from app.database.session import create_db_tables
 from scalar_fastapi import get_scalar_api_reference
 
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan_handler(app: FastAPI):
+    await create_db_tables()
+    yield
+
+app = FastAPI(
+    # Server start/stop listener
+    lifespan=lifespan_handler,
+)
+
 
 app.include_router(master_router)
 
-
-@app.on_event("startup")
-def on_startup():
-    create_db_and_tables()
 
 
 # Scalar API Documentation
