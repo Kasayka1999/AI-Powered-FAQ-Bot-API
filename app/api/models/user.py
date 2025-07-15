@@ -17,6 +17,7 @@ class User(UserBase, table=True):
 
 class UserCreate(UserBase):
     password: str  # This will be hashed before storing
+    rewrite_password: str
 
 class UserResponse(SQLModel):
     username: str

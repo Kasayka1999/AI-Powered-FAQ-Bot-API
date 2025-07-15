@@ -2,7 +2,7 @@ from sqlmodel import Field, SQLModel
 from datetime import datetime
 
 class OrganizationBase(SQLModel):
-    name: str = Field(index=True, unique=True)
+    name_organization: str = Field(index=True, unique=True)
     created_by: str | None = None
     created_at: datetime | None = None
 

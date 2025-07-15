@@ -34,3 +34,8 @@ async def create_organization(organization: OrganizationCreate, current_user: An
     db.refresh(current_user)
 
     return organization
+
+"""
+@router.delete("/delete/", response_model=Organization)
+async def delete_organization(organization: Organization current_user: Annotated[User, Depends(get_current_active_user)], db: SessionDep):
+    org_id = current_user.organization_id"""

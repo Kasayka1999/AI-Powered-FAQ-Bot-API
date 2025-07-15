@@ -6,3 +6,4 @@ pyjwt
 sqlmodel
 passlib
 dotenv
+scalar
