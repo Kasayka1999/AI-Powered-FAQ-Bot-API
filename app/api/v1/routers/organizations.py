@@ -2,9 +2,8 @@ from fastapi import APIRouter
 from typing import Annotated
 from fastapi import Depends, HTTPException
 from app.api.models.organization import OrganizationCreate, Organization
-from app.api.dependencies import SessionDep
+from app.api.dependencies import SessionDep, UserDep
 from app.api.models.user import User
-from app.utils.jwt import get_current_active_user
 from datetime import datetime
 
 router = APIRouter(
@@ -13,7 +12,7 @@ router = APIRouter(
     )
 
 @router.post("/create", response_model=OrganizationCreate)
-async def create_organization(organization: OrganizationCreate, current_user: Annotated[User, Depends(get_current_active_user)], db: SessionDep):
+async def create_organization(organization: OrganizationCreate, current_user: UserDep, db: SessionDep):
     if current_user.organization_id is not None:
         raise HTTPException(
             status_code=400,
@@ -25,13 +24,13 @@ async def create_organization(organization: OrganizationCreate, current_user: An
         created_at=datetime.now()
     )
     db.add(organization)
-    db.commit()
-    db.refresh(organization)
+    await db.commit()
+    await db.refresh(organization)
 
     # Update user's organization_id
     current_user.organization_id = organization.id
-    db.commit()
-    db.refresh(current_user)
+    await db.commit()
+    await db.refresh(current_user)
 
     return organization
 
