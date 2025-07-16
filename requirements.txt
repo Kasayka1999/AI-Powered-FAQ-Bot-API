@@ -10,3 +10,4 @@ scalar
 pydantic_settings
 asyncpg
 greenlet
+alembic
