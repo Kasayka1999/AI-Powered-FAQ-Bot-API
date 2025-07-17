@@ -19,7 +19,7 @@ from app.config import security_settings
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 
 async def get_user(session: SessionDep, username: str):
-    statement = select(User).where(User.username == username)#.options(selectinload(User.organization))
+    statement = select(User).where(User.username == username)
     result = await session.execute(statement)
     get_user = result.scalars().first() 
     return get_user
