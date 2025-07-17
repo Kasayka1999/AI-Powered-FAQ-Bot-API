@@ -1,4 +1,7 @@
-from sqlmodel import Relationship, SQLModel, Field
+from sqlmodel import Column, Relationship, SQLModel, Field
+from pydantic import EmailStr
+from sqlalchemy.dialects import postgresql
+from uuid import uuid4, UUID
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -7,17 +10,23 @@ if TYPE_CHECKING:
 
 class UserBase(SQLModel):
     username: str = Field(index=True, unique=True)
-    email: str = Field(unique=True)
+    email: EmailStr
     full_name: str | None = None
 
 class User(UserBase, table=True):
     __tablename__ = "users" #name the table users
 
-    id: int | None = Field(default=None, primary_key=True)
+    id: UUID = Field(
+        sa_column=Column(
+            postgresql.UUID,
+            default=uuid4,
+            primary_key=True,
+        )
+    )
     hashed_password: str
     is_active: bool = Field(default=True)
     is_admin: bool = Field(default=False) 
-    organization_id: int | None = Field(default=None, foreign_key="organizations.id")
+    organization_id: UUID | None = Field(default=None, foreign_key="organizations.id")
     organization: "Organization" = Relationship(back_populates="user", sa_relationship_kwargs={"lazy": "selectin", "uselist": False})
 
 class UserCreate(UserBase):
@@ -26,6 +35,6 @@ class UserCreate(UserBase):
 
 class UserResponse(SQLModel):
     username: str
-    email: str
+    email: EmailStr
     full_name: str
     organization: str | None
