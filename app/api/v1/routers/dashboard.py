@@ -20,6 +20,9 @@ async def create_user(new_user: UserCreate, session: SessionDep):
     result = await session.execute(statement)
     user_result = result.scalars().first()
 
+    if not new_user.username or new_user.username.strip() == "":
+        raise HTTPException(status_code=409, detail="Username can't be empty!")
+
     if user_result:
         raise HTTPException(status_code=409, detail="Username already exists!")
 
