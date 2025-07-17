@@ -18,6 +18,10 @@ async def create_organization(new_organization: OrganizationCreate, current_user
             status_code=400,
             detail="User already belongs to an organization."
         )
+    
+    if not new_organization.organization_name or new_organization.organization_name.strip() == "":
+        raise HTTPException(status_code=400, detail="Please enter organization name")
+    
     new_organization = Organization(
         organization_name=new_organization.organization_name,
         created_by=current_user.username,
