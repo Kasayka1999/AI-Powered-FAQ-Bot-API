@@ -11,8 +11,9 @@ from sqlmodel import SQLModel
 from app.config import db_settings
 
 #import our database models
-from app.api.models.user import User
-from app.api.models.organization import Organization
+from app.models.user import User
+from app.models.organization import Organization
+from app.models.documents import Documents
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

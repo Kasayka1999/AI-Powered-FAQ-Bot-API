@@ -18,7 +18,7 @@ class User(UserBase, table=True):
     is_active: bool = Field(default=True)
     is_admin: bool = Field(default=False) 
     organization_id: int | None = Field(default=None, foreign_key="organizations.id")
-    organization: "Organization" = Relationship(back_populates="user", sa_relationship_kwargs={"uselist": False})
+    organization: "Organization" = Relationship(back_populates="user", sa_relationship_kwargs={"lazy": "selectin", "uselist": False})
 
 class UserCreate(UserBase):
     password: str  # This will be hashed before storing
