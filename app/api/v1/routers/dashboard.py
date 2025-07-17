@@ -11,7 +11,7 @@ from app.utils.hashing import pwd_context
 
 router = APIRouter(
     prefix="/dashboard",
-    tags=["User Panel"]
+    tags=["Dashboard"]
 )
 
 #user create
@@ -50,7 +50,11 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],db: S
 
 
 @router.get("/users/me/", response_model=UserResponse)
-async def read_users_me(current_user: UserDep):
-    return current_user
+async def user_info(current_user: UserDep):
+    org_name = None
+    if current_user.organization:
+        org_name = current_user.organization.organization_name
+    data = current_user.model_dump(exclude={"organization"})
+    return UserResponse(**data, organization=org_name)
 
 

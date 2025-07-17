@@ -26,3 +26,6 @@ class UserCreate(UserBase):
 
 class UserResponse(SQLModel):
     username: str
+    email: str
+    full_name: str
+    organization: str | None
