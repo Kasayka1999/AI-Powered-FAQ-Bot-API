@@ -130,11 +130,11 @@ A brief overview of the key directories in this project:
 ├── app/                  # Main application source code
 │   ├── api/              # API logic
 │   │   ├── dependencies.py # API dependencies (e.g., get_current_user, SessionDep)
-│   │   ├── models/       # SQLModel table definitions and schemas
 │   │   └── v1/           # API version 1
 │   │       ├── routers/  # Specific endpoint files
 │   │       └── router.py # Main v1 router aggregation
 │   ├── database/         # Database session management
+│   ├── models/           # SQLModel table definitions and schemas
 │   ├── utils/            # Utility functions (hashing, JWT)
 │   ├── config.py         # Environment-based configuration
 │   └── main.py           # FastAPI app entry point

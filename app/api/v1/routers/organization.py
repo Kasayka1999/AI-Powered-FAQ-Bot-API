@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from typing import Annotated
 from fastapi import Depends, HTTPException
 from sqlmodel import select
-from app.api.models.organization import OrganizationCreate, Organization, OrganizationDelete
+from app.models.organization import OrganizationCreate, Organization, OrganizationDelete
 from app.api.dependencies import SessionDep, UserDep
 from datetime import datetime
 
@@ -18,6 +18,10 @@ async def create_organization(new_organization: OrganizationCreate, current_user
             status_code=400,
             detail="User already belongs to an organization."
         )
+    
+    if not new_organization.organization_name or new_organization.organization_name.strip() == "":
+        raise HTTPException(status_code=400, detail="Please enter organization name")
+    
     new_organization = Organization(
         organization_name=new_organization.organization_name,
         created_by=current_user.username,

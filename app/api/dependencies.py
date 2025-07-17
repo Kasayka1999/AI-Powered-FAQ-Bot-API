@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
 
-from app.api.models.user import User
+from app.models.user import User
 from app.database.session import get_session
 from app.utils.hashing import verify_password
 from app.utils.jwt import Token, TokenData, create_access_token, oauth2_scheme
@@ -19,7 +19,7 @@ from app.config import security_settings
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 
 async def get_user(session: SessionDep, username: str):
-    statement = select(User).where(User.username == username).options(selectinload(User.organization))
+    statement = select(User).where(User.username == username)
     result = await session.execute(statement)
     get_user = result.scalars().first() 
     return get_user
