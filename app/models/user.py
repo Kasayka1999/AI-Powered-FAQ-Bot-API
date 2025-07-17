@@ -2,7 +2,7 @@ from sqlmodel import Relationship, SQLModel, Field
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from app.api.models.organization import Organization
+    from app.models.organization import Organization
 
 
 class UserBase(SQLModel):

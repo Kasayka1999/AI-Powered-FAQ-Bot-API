@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from app.api.models.user import User
+    from app.models.user import User
 
 class OrganizationBase(SQLModel):
     organization_name: str = Field(index=True, unique=True)

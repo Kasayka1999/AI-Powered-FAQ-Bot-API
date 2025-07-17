@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from typing import Annotated
 from fastapi import Depends, HTTPException
 from sqlmodel import select
-from app.api.models.organization import OrganizationCreate, Organization, OrganizationDelete
+from app.models.organization import OrganizationCreate, Organization, OrganizationDelete
 from app.api.dependencies import SessionDep, UserDep
 from datetime import datetime
 

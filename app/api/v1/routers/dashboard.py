@@ -1,9 +1,8 @@
-from http.client import HTTPException
 from typing import Annotated
-from fastapi import Depends, APIRouter
+from fastapi import Depends, APIRouter, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import select
-from app.api.models.user import UserCreate, UserResponse, User
+from app.models.user import UserCreate, UserResponse, User
 from app.api.dependencies import SessionDep, UserDep, login_for_access_token
 from app.utils.jwt import Token
 from app.utils.hashing import pwd_context
