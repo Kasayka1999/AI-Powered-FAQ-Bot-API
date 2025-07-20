@@ -1,4 +1,7 @@
-from fastapi import APIRouter, UploadFile
+from fastapi import APIRouter, File, HTTPException, UploadFile
+
+from app.api.dependencies import SessionDep, UserDep
+from app.utils.s3 import download_file_from_s3, upload_file_to_s3
 
 
 
@@ -8,13 +11,22 @@ router = APIRouter(
 )
 
 
-
+"""
 @router.post("/upload")
-async def upload_document(file: UploadFile):
-    contents = await file.read()
-    
-    return {"filename":file.filename, "type": file.content_type}
+async def upload_document(session: SessionDep, current_user: UserDep, file: UploadFile = File(...)):
+    try:
+        url = upload_file_to_s3(file.file, file.filename)
+        return {"url": url}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/")
-async def get_document():
-    return {"test":"test"}
+@router.post("/download")
+async def upload_document(session: SessionDep, curret_user: UserDep):
+    current_user.
+    try:
+        url = download_file_from_s3(file.filename)
+        return {"url": url}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))"""
+
+

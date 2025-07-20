@@ -12,3 +12,4 @@ asyncpg
 greenlet
 alembic
 pydantic
+boto3
