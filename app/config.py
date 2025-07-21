@@ -28,5 +28,14 @@ class SecuritySettings(BaseSettings):
 
     model_config = _base_config
 
+
+class AWSSettings(BaseSettings):
+    AWS_ACCESS_KEY_ID: str
+    AWS_SECRET_ACCESS_KEY: str
+    AWS_REGION: str
+    AWS_S3_BUCKET: str
+
+    model_config = _base_config
+
 db_settings = DatabaseSettings()
 security_settings = SecuritySettings()

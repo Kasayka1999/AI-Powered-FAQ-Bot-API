@@ -1,3 +1,11 @@
+import logging
+
+logging.basicConfig(
+    filename='app.log',
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(message)s'
+)
+
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.api.v1.router import master_router

@@ -21,6 +21,8 @@ This project is under active development.
   - Password hashing using `passlib`.
   - API endpoints for user registration, login, and organization management.
   - Interactive API documentation with Scalar.
+  - Document upload, replace, list, download, and delete endpoints.
+  - AWS S3 integration for file storage (see utils/s3.py).
 
 #### 🚧 Planned
 
@@ -93,6 +95,12 @@ POSTGRES_DB=your_db
 JWT_SECRET=a-strong-random-secret-key
 JWT_ALGORITHM=HS256
 JWT_TOKEN_EXPIRE_MINUTES=30
+
+# AWS S3 credentials
+AWS_ACCESS_KEY_ID=your_aws_access_key
+AWS_SECRET_ACCESS_KEY=your_aws_secret_key
+AWS_REGION=your_aws_server_region
+AWS_S3_BUCKET=your_bucket
 
 # OpenAI API Key (for planned embedding feature)
 # OPENAI_API_KEY="your-openai-api-key"

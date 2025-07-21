@@ -1,5 +1,4 @@
 fastapi
-datetime
 pyjwt
 "passlib[bcrypt]"
 'bcrypt<4.1.0'
@@ -12,3 +11,4 @@ asyncpg
 greenlet
 alembic
 pydantic
+boto3
