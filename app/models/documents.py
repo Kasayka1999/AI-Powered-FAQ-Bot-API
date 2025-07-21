@@ -11,13 +11,14 @@ if TYPE_CHECKING:
 class DocumentsBase(SQLModel):
     file_name: str 
     upload_by: str
-    organization_id: int
+    organization_id: UUID
     uploaded_at: datetime = Field(
         sa_column=Column(
             postgresql.TIMESTAMP,
             default=datetime.now,
         )
     )
+    storage_key: str
 
 class Documents(DocumentsBase, table=True):
     __tablename__ = "documents"

@@ -1,5 +1,4 @@
 fastapi
-datetime
 pyjwt
 "passlib[bcrypt]"
 'bcrypt<4.1.0'

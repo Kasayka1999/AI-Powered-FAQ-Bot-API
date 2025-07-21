@@ -1,3 +1,5 @@
+from datetime import datetime
+import logging
 import boto3
 from app.config import AWSSettings
 
@@ -10,6 +12,7 @@ s3_client = boto3.client(
     region_name=aws_settings.AWS_REGION,
 )
 
+bucket = aws_settings.AWS_S3_BUCKET
 # To create the bucket if it does not exist, if exist Comment out.
 #try:
 #    s3_client.create_bucket(
@@ -22,13 +25,28 @@ s3_client = boto3.client(
 #except Exception as e:
 #    print(f"Error creating bucket: {e}")
 
-
 def upload_file_to_s3(file_obj, filename, bucket=None):
     bucket = bucket or aws_settings.AWS_S3_BUCKET
     s3_client.upload_fileobj(file_obj, bucket, filename)
-    return f"https://{bucket}.s3.{aws_settings.AWS_REGION}.amazonaws.com/{filename}"
 
 def download_file_from_s3(filename, bucket=None):
     bucket = bucket or aws_settings.AWS_S3_BUCKET
     file_obj = s3_client.get_object(Bucket=bucket, Key=filename)
     return file_obj['Body'].read()
+
+def delete_file_from_s3(filename, bucket=None):
+    bucket = bucket or aws_settings.AWS_S3_BUCKET
+    s3_client.delete_object(Bucket=bucket, Key=filename)
+
+
+def file_exists_in_s3(filename, bucket=None):
+    bucket = bucket or aws_settings.AWS_S3_BUCKET
+    try:
+        s3_client.head_object(Bucket=bucket, Key=filename)
+        return True
+    except s3_client.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "404":
+            return False
+        logging.error(f"S3 error checking file '{filename}': {e}")
+        raise
+            

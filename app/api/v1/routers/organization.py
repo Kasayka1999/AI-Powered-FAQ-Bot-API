@@ -2,9 +2,12 @@ from fastapi import APIRouter
 from typing import Annotated
 from fastapi import Depends, HTTPException
 from sqlmodel import select
+from app.models.documents import Documents
 from app.models.organization import OrganizationCreate, Organization, OrganizationDelete
 from app.api.dependencies import SessionDep, UserDep
 from datetime import datetime
+
+from app.utils.s3 import delete_file_from_s3
 
 router = APIRouter(
     prefix="/organization",
@@ -46,6 +49,14 @@ async def delete_organization(delete_organization: OrganizationDelete, current_u
     
     if not delete_organization.organization_name == current_user.organization.organization_name:
         raise HTTPException(status_code=400, detail="Please type your organization name, in case if you forget check dashboard / User Info")
+    
+    docs_stmt = select(Documents).where(Documents.organization_id == current_user.organization.id)
+    docs_result = await session.execute(docs_stmt)
+    docs = docs_result.scalars().all()
+    for doc in docs:
+        delete_file_from_s3(doc.storage_key)  # Delete file from S3
+        await session.delete(doc)             # Delete document from DB
+    await session.commit()
     
     statement = select(Organization).where(Organization.organization_name == delete_organization.organization_name)
     result = await session.execute(statement)
