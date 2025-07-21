@@ -1,10 +1,12 @@
 import logging
-
+"""
 logging.basicConfig(
     filename='app.log',
     level=logging.INFO,
     format='%(asctime)s %(levelname)s %(message)s'
 )
+logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)"""
+
 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
