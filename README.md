@@ -41,6 +41,8 @@ This project is under active development.
 
 ## Getting Started
 
+- All document files are stored securely in AWS S3. Access is managed via API endpoints and AWS credentials in your .env file.
+
 Follow these instructions to set up and run the project on your local machine.
 
 ### 1. Prerequisites
@@ -143,7 +145,7 @@ A brief overview of the key directories in this project:
 │   │       └── router.py # Main v1 router aggregation
 │   ├── database/         # Database session management
 │   ├── models/           # SQLModel table definitions and schemas
-│   ├── utils/            # Utility functions (hashing, JWT)
+│   ├── utils/            # Utility functions (hashing, JWT, AWS S3)
 │   ├── config.py         # Environment-based configuration
 │   └── main.py           # FastAPI app entry point
 ├── alembic.ini           # Alembic configuration
@@ -161,6 +163,10 @@ A brief overview of the key directories in this project:
 - `GET /dashboard/users/me/` - Get current user's information.
 - `POST /organization/create` - Create a new organization.
 - `DELETE /organization/delete/` - Delete an organization.
+- `POST /documents/upload`     # Upload or replace a document (PDF/TXT) to S3
+- `GET /documents/my_documents` # List all documents for the current organization
+- `POST /documents/download`    # Download a document from S3
+- `DELETE /documents/delete`    # Delete a document from S3 and database (with confirmation)
 
 #### Planned Features & Endpoints
 
