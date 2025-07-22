@@ -12,7 +12,6 @@ s3_client = boto3.client(
     region_name=aws_settings.AWS_REGION,
 )
 
-bucket = aws_settings.AWS_S3_BUCKET
 # To create the bucket if it does not exist, if exist Comment out.
 #try:
 #    s3_client.create_bucket(

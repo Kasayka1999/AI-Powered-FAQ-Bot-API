@@ -77,7 +77,7 @@ async def show_documents(session: SessionDep, current_user: UserDep):
     return {"Documents": docs}
 
 @router.post("/download")
-async def upload_document(session: SessionDep, curret_user: UserDep, filename: str):
+async def download_document(session: SessionDep, curret_user: UserDep, filename: str):
     try:
         doc_statement = select(Documents.storage_key).where(
             Documents.organization_id == curret_user.organization_id,

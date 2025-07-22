@@ -1,2 +1,14 @@
 2025-07-21 13:58:22,260 INFO 1 change detected2025-07-21 14:09:11,008 INFO 1 change detected
 2025-07-21 14:09:15,264 INFO 1 change detected
+2025-07-21 14:10:30,001 INFO 16 changes detected
+2025-07-21 14:11:16,225 INFO 26 changes detected
+2025-07-21 14:11:20,101 INFO 4 changes detected
+2025-07-22 09:05:08,790 INFO 1 change detected
+2025-07-22 09:05:08,791 WARNING WatchFiles detected changes in 'app/utils/s3.py'. Reloading...
+2025-07-22 09:05:09,819 INFO 3 changes detected
+2025-07-22 09:05:10,182 INFO 1 change detected
+2025-07-22 09:05:10,182 WARNING WatchFiles detected changes in 'app/utils/s3.py'. Reloading...
+2025-07-22 09:05:11,020 INFO 3 changes detected
+2025-07-22 09:06:27,425 INFO 1 change detected
+2025-07-22 09:06:27,426 WARNING WatchFiles detected changes in 'app/api/v1/routers/documents.py'. Reloading...
+2025-07-22 09:06:28,507 INFO 3 changes detected
