@@ -37,5 +37,16 @@ class AWSSettings(BaseSettings):
 
     model_config = _base_config
 
+class llmSettings(BaseSettings):
+    GEMINI_API_KEY: str
+    LANGSMITH_API_KEY: str
+    LANGSMITH_ENDPOINT: str
+    LANGSMITH_PROJECT: str
+    LANGSMITH_TRACING: str
+
+    model_config = _base_config
+
 db_settings = DatabaseSettings()
 security_settings = SecuritySettings()
+aws_settings = AWSSettings()
+llm_settings = llmSettings()
