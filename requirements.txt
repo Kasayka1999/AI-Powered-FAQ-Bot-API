@@ -12,3 +12,4 @@ greenlet
 alembic
 pydantic
 boto3
+langchain-google-genai

@@ -1,9 +1,7 @@
 from datetime import datetime
 import logging
 import boto3
-from app.config import AWSSettings
-
-aws_settings = AWSSettings()
+from app.config import aws_settings
 
 s3_client = boto3.client(
     "s3",
