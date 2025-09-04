@@ -1,0 +1,23 @@
+# Exclude env and VCS
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+venv
+
+migrations
+
+.mypy_cache
+.idea
+alembic.ini
+
+**/__pycache__
+**/.pytest_cache__
+
+# OS
+.DS_Store
+

@@ -1,0 +1,28 @@
+services:
+  api:
+    build: .
+    env_file:
+      - .env
+    environment:
+      POSTGRES_SERVER: db # <-- connect to container Postgres server.
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: pgvector/pgvector:pg16  # <-- Postgres 16 with pgvector
+    env_file:
+      - .env
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

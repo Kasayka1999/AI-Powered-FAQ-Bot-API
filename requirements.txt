@@ -1,11 +1,12 @@
-fastapi
+fastapi[standard]
 pyjwt
-"passlib[bcrypt]"
-'bcrypt<4.1.0'
+passlib[bcrypt]
+bcrypt<4.1.0
 sqlmodel
 passlib
 dotenv
 scalar
+scalar_fastapi
 pydantic_settings
 asyncpg
 greenlet
@@ -13,8 +14,7 @@ alembic
 pydantic
 boto3
 langchain-google-genai
-"unstructured[pdf]"
-brew install poppler #mac
+unstructured[pdf]
 pytesseract
-brew install tesseract #mac
 nltk
+langchain-postgres
