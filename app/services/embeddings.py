@@ -17,6 +17,7 @@ def build_embeddings():
     if len(empty_list) > 1:
         print(len(empty_list[1]))
 
+    print(empty_list)
     return empty_list
 
 if __name__ == "__main__":
