@@ -52,19 +52,3 @@ text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000,
 
 
 all_splits = text_splitter.split_documents(docs)
-
-"""
-#if you get a ntlk punk error please run one time at the top of the code the code below.
-
-import ssl
-import nltk
-
-try:
-    _create_unverified_https_context = ssl._create_unverified_context
-except AttributeError:
-    pass
-else:
-    ssl._create_default_https_context = _create_unverified_https_context
-
-nltk.download('punkt')
-"""
