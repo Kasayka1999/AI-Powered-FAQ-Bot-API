@@ -25,14 +25,14 @@ This project is under active development. Status below highlights completed work
 
 ### 🚧 In progress (short-term)
 - [ ] Embeddings generation pipeline (provider-agnostic)
-- [ ] Persist embeddings to a vector store (pgvector / Qdrant)
+- [ ] Persist embeddings to a vector store (pgvector on Postgres — preferred for MVP)
 - [ ] RAG integration: retrieval + ranking + answer generation endpoint (`/ask`)
 - [ ] Improve ingestion resilience (parallel downloads, retries, monitoring)
 
 ### 🗺️ Planned / Future work
 - [ ] Expose `/ask` endpoint: context-aware answers using RAG (retrieval → generation)
-- [ ] Persist and serve embeddings (vector store + metadata)
-- [ ] Admin endpoints for bulk document management, analytics and audit logs
+- [ ] Persist and serve embeddings (pgvector with org_id tenancy and metadata; consider swapping to Qdrant for high-scale/low-latency ANN)
+- [ ] Admin analytics and usage reporting: endpoints and dashboards to retrieve logs, usage metrics, interaction history, and performance KPIs (filterable by organization and time range)
 - [ ] Frontend chatbot demo and example integrations
 - [ ] Multi-language OCR support (Tesseract language packs + auto language detection)
 - [ ] CI/CD, secrets management, and production deployment guides
