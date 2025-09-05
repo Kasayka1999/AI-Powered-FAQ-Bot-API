@@ -36,6 +36,11 @@ This project is under active development. Status below highlights completed work
 - [ ] Frontend chatbot demo and example integrations
 - [ ] Multi-language OCR support (Tesseract language packs + auto language detection)
 - [ ] CI/CD, secrets management, and production deployment guides
+- [ ] Web scraping for FAQ sources (Playwright)
+  - Build and maintain Playwright-based scrapers to extract FAQ content and knowledge pages (not just PDFs).
+  - Implementation notes: respect robots.txt, handle JS-rendered sites, rate limits and pagination; store raw + structured output; dedupe and normalize content before chunking/embedding.
+  - Ops: add scheduler, monitoring/alerts, and a short SLA to investigate/fix scraper failures (target 2–4 hours) to keep data collection stable and accurate.
+
 
 Notes
 - The project follows a RAG (Retrieval-Augmented Generation) approach: page-level documents + chunking (done) → embeddings → vector search → answer generation. Page-level granularity improves retrieval relevance at the cost of more embeddings.
