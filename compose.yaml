@@ -1,6 +1,8 @@
 services:
   api:
     build: .
+    volumes: # <-- to see code changes without rebuild.
+      - ./:/app
     env_file:
       - .env
     environment:

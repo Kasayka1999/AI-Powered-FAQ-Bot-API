@@ -18,3 +18,4 @@ unstructured[pdf]
 pytesseract
 nltk
 langchain-postgres
+langchain_community
