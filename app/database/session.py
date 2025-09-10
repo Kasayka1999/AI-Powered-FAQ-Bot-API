@@ -15,8 +15,15 @@ engine = create_async_engine(
 
 async def create_db_tables():
     async with engine.begin() as connection:
-        from app.models.user import User
-        from app.models.organization import Organization
+        # Ensure models are imported so SQLModel is aware of tables
+        from app.models.user import User 
+        from app.models.organization import Organization  
+        from app.models.documents import Documents, DocumentChunk
+
+        # Ensure pgvector extension exists BEFORE creating tables using vector type
+        await connection.exec_driver_sql("CREATE EXTENSION IF NOT EXISTS vector")
+
+        # Create tables
         await connection.run_sync(SQLModel.metadata.create_all)
 
 

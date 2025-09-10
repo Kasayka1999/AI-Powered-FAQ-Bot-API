@@ -19,3 +19,4 @@ pytesseract
 nltk
 langchain-postgres
 langchain_community
+pgvector

@@ -6,6 +6,7 @@ from sqlmodel import select
 from app.api.dependencies import SessionDep, UserDep
 from app.models.documents import Documents
 from app.utils.s3 import delete_file_from_s3, download_file_from_s3, file_exists_in_s3, upload_file_to_s3
+from app.services.embeddings import process_and_embed_single_document  # NEW
 
 
 
@@ -20,8 +21,8 @@ def is_allowed_file(filename):
     return any(filename.lower().endswith(ext) for ext in ALLOWED_EXTENSIONS)
 
 @router.post("/upload")
-async def upload_document(session: SessionDep, 
-                          current_user: UserDep, 
+async def upload_document(session: SessionDep,
+                          current_user: UserDep,
                           file: UploadFile = File(...),
                           confirm: bool = False):
     if current_user.organization_id is None:
@@ -49,32 +50,49 @@ async def upload_document(session: SessionDep,
             old_doc_result = await session.execute(old_doc_stmt)
             old_doc = old_doc_result.scalars().first()
             if old_doc:
+                # Delete DB entry; S3 file will be overwritten below
                 await session.delete(old_doc)
                 await session.commit()
         
-        #upload to AWS S3
+        # Upload to AWS S3 (overwrites if exists)
         upload_file_to_s3(file.file, new_storage_key)
 
-        new_documents = Documents(
+        # Persist new document row
+        new_document = Documents(
             file_name=file.filename,
             upload_by=current_user.username,
             organization_id=current_user.organization_id,
             uploaded_at=datetime.now(),
             storage_key=new_storage_key
         )
-        session.add(new_documents)
+        session.add(new_document)
         await session.commit()
-        await session.refresh(new_documents)
-        return new_documents
+        await session.refresh(new_document)
+
+        # Embed-on-upload: chunk + embed + store chunks (cascades on future delete)
+        await process_and_embed_single_document(session, new_document)
+
+        return new_document
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/my_documents")
 async def show_documents(session: SessionDep, current_user: UserDep):
-    docs_stmt = select(Documents.file_name).where(Documents.organization_id == current_user.organization.id)
+    # Return per-document freshness info using last_embedded_at vs uploaded_at
+    docs_stmt = select(Documents).where(Documents.organization_id == current_user.organization_id)
     docs_result = await session.execute(docs_stmt)
     docs = docs_result.scalars().all()
-    return {"Documents": docs}
+
+    payload = []
+    for doc in docs:
+        up_to_date = bool(doc.last_embedded_at and doc.uploaded_at and doc.last_embedded_at >= doc.uploaded_at)
+        payload.append({
+            "file_name": doc.file_name,
+            "uploaded_at": doc.uploaded_at.isoformat() if doc.uploaded_at else None,
+            "last_embedded_at": doc.last_embedded_at.isoformat() if doc.last_embedded_at else None,
+            "up_to_date": up_to_date,
+        })
+    return {"Documents": payload}
 
 @router.post("/download")
 async def download_document(session: SessionDep, curret_user: UserDep, filename: str):
@@ -116,7 +134,9 @@ async def delete_document(filename: str,
     if not doc:
         raise HTTPException(status_code=409, detail=f"Failed: Document with {filename} not found.")
     
+    # Delete from S3 first (best effort)
     delete_file_from_s3(doc.storage_key)
+    # Delete DB row; chunks are removed via ON DELETE CASCADE
     await session.delete(doc)
     await session.commit()
-    return {"detail": f"Success: Document {filename} deleted."}
+    return {"detail": f"Success: Document {filename} deleted (including all chunks/embeddings)."}

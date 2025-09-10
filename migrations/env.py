@@ -20,7 +20,7 @@ from app.models.documents import Documents
 config = context.config
 
 #set db connection url which already predefined on config db_settings
-config.set_main_option("sqlalchemy.url", db_settings.POSTGRES_URL)
+config.set_main_option("sqlalchemy.url", db_settings.POSTGRES_URL_FOR_ALEMBIC)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
