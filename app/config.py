@@ -19,6 +19,12 @@ class DatabaseSettings(BaseSettings):
     @property
     def POSTGRES_URL(self):
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+    
+    # Use a different PostgreSQL port for Alembic migrations,
+    # since the database is running inside Docker.
+    @property
+    def POSTGRES_URL_FOR_ALEMBIC(self):
+        return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:5433/{self.POSTGRES_DB}"
 
 
 class SecuritySettings(BaseSettings):
