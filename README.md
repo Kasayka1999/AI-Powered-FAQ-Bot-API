@@ -22,10 +22,10 @@ This project is under active development. Status below highlights completed work
   - [x] Filter empty pages and chunk text with RecursiveCharacterTextSplitter (chunking complete)
 - [x] PDF / Tesseract support (poppler, tesseract) and predownloaded NLTK punkt in Dockerfile
 - [x] Robust loading: paginator for large S3 buckets, per-file error handling, suppression of noisy parser output
+- [x] Embeddings generation pipeline (provider-agnostic)
+- [x] Persist embeddings to a vector store (pgvector on Postgres — preferred for MVP)
 
 ### 🚧 In progress (short-term)
-- [ ] Embeddings generation pipeline (provider-agnostic)
-- [ ] Persist embeddings to a vector store (pgvector on Postgres — preferred for MVP)
 - [ ] RAG integration: retrieval + ranking + answer generation endpoint (`/ask`)
 - [ ] Improve ingestion resilience (parallel downloads, retries, monitoring)
 
