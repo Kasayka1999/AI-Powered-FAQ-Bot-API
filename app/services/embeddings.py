@@ -105,6 +105,7 @@ async def process_and_embed_single_document(session: AsyncSession, document: Doc
             document_id=document.id,
             content=text,
             embedding=vector,
+            organization_id=document.organization_id
         )
         session.add(dc)
         created += 1

@@ -2,7 +2,7 @@ from sqlmodel import Column, Field, Relationship, SQLModel
 from sqlalchemy.dialects import postgresql
 from uuid import uuid4, UUID
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
     from app.models.user import User
@@ -29,7 +29,9 @@ class Organization(OrganizationBase, table=True):
         )
     )
     user: "User" = Relationship(back_populates="organization", sa_relationship_kwargs={"lazy": "selectin", "uselist": False})
-    documents: "Documents" = Relationship(back_populates="organization", sa_relationship_kwargs={"lazy": "selectin"})
+    documents: List["Documents"] = Relationship(back_populates="organization", sa_relationship_kwargs={"lazy": "selectin"})
+    # separate relationship for chunks (document embeddings)
+    chunks: List["DocumentChunk"] = Relationship(back_populates="organization", sa_relationship_kwargs={"lazy": "selectin"})
 
 class OrganizationCreate(SQLModel):
     organization_name: str
@@ -40,4 +42,4 @@ class OrganizationDelete(OrganizationCreate):
 
 
 
-from app.models.documents import Documents #fix mapping error
+from app.models.documents import DocumentChunk, Documents #fix mapping error

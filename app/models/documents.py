@@ -51,7 +51,6 @@ class DocumentChunk(SQLModel, table=True):
     __tablename__ = "document_chunks"
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     document_id: UUID = Field(foreign_key="documents.id", ondelete="CASCADE", nullable=False, index=True)
-
     # store chunk text as Postgres TEXT 
     content: str = Field(
         sa_column=Column(postgresql.TEXT, nullable=False)
@@ -65,5 +64,9 @@ class DocumentChunk(SQLModel, table=True):
         back_populates="chunks",
         sa_relationship_kwargs={"lazy": "selectin", "passive_deletes": True},
     )
+    organization_id: UUID | None = Field(default=None, foreign_key="organizations.id", index=True)
+    # back_populates should match Organization.chunks
+    organization: "Organization" = Relationship(back_populates="chunks", sa_relationship_kwargs={"lazy": "selectin"})
+ 
 
 from app.models.organization import Organization #fix mapper
