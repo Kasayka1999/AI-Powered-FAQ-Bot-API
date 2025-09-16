@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.dependencies import SessionDep, UserDep
 from app.models.organization import Organization
+from app.models.documents import Documents 
 from app.services.similarity_search import vector_search
 from app.llm.base import llm_call
 import re
@@ -67,13 +68,21 @@ async def ask_route(body: AskRequest,
     if not vector_results:
         return {"answer": "I don't know (no indexed documents for your organisation)."}
 
-    # Build a short context; truncate chunk text to avoid token overflow
+    # build sources list (keep traceable metadata like page, source, chunk id)
+    sources = []
     context_pieces = []
     for result in vector_results:
         snippet = (result["content"] or "")[:1500]
         context_pieces.append(f"id:{result['id']}]\n{snippet}")
-
-
+        sources.append({
+            "id": result["id"],
+            "document_id": result["document_id"],
+            "filename": result.get("filename"),
+            "distance": result.get("distance"),
+            "raw_metadata": result.get("metadata"),
+            "snippet": snippet,
+        })
+        
     system = ("You are a helpful assistant. Answer ONLY using the CONTEXT below. "
               "If the answer is not present, say: 'I don't know; please contact support.'")
     prompt = f"{system}\n\nCONTEXT:\n\n" + "\n\n---\n\n".join(context_pieces) + f"\n\nQUESTION:\n{body.question}"
@@ -81,7 +90,14 @@ async def ask_route(body: AskRequest,
     llm_result = await llm_call(prompt)
     # text to return to client
     answer_text = llm_result["text"]
+    metadata_text = llm_result["metadata"]
+
+# return both LLM metadata and the chunk/source metadata used to build the prompt
+    response_metadata = {
+        "llm": metadata_text,
+        "sources": sources,
+    }
 
 
-
-    return {"answer": answer_text}
+#metadata will be used for db log
+    return {"answer": answer_text, "metadata": response_metadata}
