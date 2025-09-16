@@ -59,6 +59,17 @@ class DocumentChunk(SQLModel, table=True):
     # Embedding uses pgvector
     embedding: List[float] = Field(sa_column=Column(Vector(768), nullable=False))
 
+    # Avoid using attribute name "metadata" (reserved). Map attribute raw_metadata -> DB column "metadata"
+    raw_metadata: Optional[dict] = Field(
+        default=None,
+        sa_column=Column("metadata", postgresql.JSONB, nullable=True),
+    )
+    chunk_index: Optional[int] = Field(default=None, sa_column=Column(postgresql.INTEGER, nullable=True))
+    content_length: Optional[int] = Field(default=None, sa_column=Column(postgresql.INTEGER, nullable=True))
+
+    # timestamp for when chunk was created/embedded
+    created_at: datetime = Field(sa_column=Column(postgresql.TIMESTAMP, default=datetime.utcnow))
+
     # Relationship back to parent document
     document: "Documents" = Relationship(
         back_populates="chunks",

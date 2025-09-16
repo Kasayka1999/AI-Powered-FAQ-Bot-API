@@ -51,9 +51,11 @@ async def process_and_embed_single_document(session: AsyncSession, document: Doc
 
         # attach metadata
         for i, d in enumerate(page_docs, start=1):
-            d.metadata.setdefault("source", storage_key)
-            d.metadata["s3_key"] = storage_key
-            d.metadata["page"] = i
+            d.metadata = d.metadata or {}
+            # ensure we always store both the S3 storage_key and the original filename
+            d.metadata["source"] = d.metadata.get("source") or storage_key
+            d.metadata["s3_key"] = d.metadata.get("s3_key") or storage_key
+            d.metadata["page"] = d.metadata.get("page") or i
         docs.extend(page_docs)
 
     if not docs:
@@ -84,7 +86,7 @@ async def process_and_embed_single_document(session: AsyncSession, document: Doc
         await session.commit()
 
     created = 0
-    for chunk in all_splits:
+    for i, chunk in enumerate(all_splits):
         text = chunk.page_content.strip()
         # sanitize text: remove NULs and ensure valid UTF-8
         if "\x00" in text:
@@ -99,13 +101,23 @@ async def process_and_embed_single_document(session: AsyncSession, document: Doc
         if not text:
             continue
 
-        vector = embeddings.embed_query(text, output_dimensionality=768) #set dim to 768.
+        vector = embeddings.embed_query(text, output_dimensionality=768)  # set dim to 768.
+
+        # basic chunk metadata and indexes (explicit fallbacks so existing None values are replaced)
+        chunk_meta = dict(chunk.metadata or {})
+        chunk_meta["page"] = chunk_meta.get("page") or chunk_meta.get("page", None)
+        chunk_meta["source"] = chunk_meta.get("source") or storage_key
+        chunk_meta["s3_key"] = chunk_meta.get("s3_key") or storage_key
+        chunk_meta["splitter_start_index"] = chunk_meta.get("splitter_start_index") or getattr(chunk, "start_index", None)
 
         dc = DocumentChunk(
             document_id=document.id,
             content=text,
             embedding=vector,
-            organization_id=document.organization_id
+            organization_id=document.organization_id,
+            raw_metadata=chunk_meta,
+            chunk_index=i,
+            content_length=len(text),
         )
         session.add(dc)
         created += 1
