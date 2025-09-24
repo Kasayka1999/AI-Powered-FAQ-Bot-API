@@ -24,18 +24,19 @@ This project is under active development. Status below highlights completed work
 - [x] Robust loading: paginator for large S3 buckets, per-file error handling, suppression of noisy parser output
 - [x] Embeddings generation pipeline (provider-agnostic)
 - [x] Persist embeddings to a vector store (pgvector on Postgres — preferred for MVP)
+- [x] Vector search / similarity and retrieval logic
+- [x] `/chat/ask` endpoint (RAG): builds context from chunks, calls LLM, returns answer + metadata
+- [x] Audit logging (ai_audit_logs) with JSONB-safe encoding
 
 ### 🚧 In progress (short-term)
-- [ ] RAG integration: retrieval + ranking + answer generation endpoint (`/ask`)
 - [ ] Improve ingestion resilience (parallel downloads, retries, monitoring)
 
 ### 🗺️ Planned / Future work
-- [ ] Expose `/ask` endpoint: context-aware answers using RAG (retrieval → generation)
 - [ ] Persist and serve embeddings (pgvector with org_id tenancy and metadata; consider swapping to Qdrant for high-scale/low-latency ANN)
-- [ ] Admin analytics and usage reporting: endpoints and dashboards to retrieve logs, usage metrics, interaction history, and performance KPIs (filterable by organization and time range)
 - [ ] Frontend chatbot demo and example integrations
 - [ ] Multi-language OCR support (Tesseract language packs + auto language detection)
-- [ ] CI/CD, secrets management, and production deployment guides
+- [ ] CI/CD, unit tests, and deployment automation (V2)
+- [ ] Admin analytics / dashboards
 - [ ] Web scraping for FAQ sources (Playwright)
   - Build and maintain Playwright-based scrapers to extract FAQ content and knowledge pages (not just PDFs).
   - Implementation notes: respect robots.txt, handle JS-rendered sites, rate limits and pagination; store raw + structured output; dedupe and normalize content before chunking/embedding.
@@ -95,12 +96,12 @@ Available:
 - `GET /documents/my_documents` - List documents for the current organization.
 - `POST /documents/download` - Download a document from S3.
 - `DELETE /documents/delete` - Delete a document from S3 and database.
+- `POST /chat/ask` - RAG-powered answer using indexed document chunks (implemented)
 
-Planned (RAG & AI):
-- `/ask` — retrieve relevant chunks and return an LLM-generated answer (RAG).
-- Embeddings endpoints / background job to generate and persist embeddings.
-- Vector-search endpoints for admin/debugging.
-- Admin analytics and usage reporting: endpoints and dashboards for logs, usage metrics, and bot performance monitoring.
+Planned (additional features):
+- Embeddings management UI / admin endpoints (if needed)
+- Admin analytics and usage reporting: dashboards and filterable logs
+- CI/CD, unit tests and deployment automation
 
 ---
 
@@ -110,7 +111,10 @@ Delivered:
 - S3 storage + utilities, authentication, DB schemas, page-level PDF ingestion (PyPDFLoader), empty-page filtering, chunking pipeline.
 
 Next steps to complete MVP:
-- Embeddings generation (provider interface), vector store persistence, retrieval + `/ask` endpoint, minimal tests and basic monitoring.
+- Add minimal unit/integration tests and CI/CD
+- Add monitoring, basic health-check endpoints and production deployment config
+- Optional: admin analytics and dashboards
+
 
 ---
 
