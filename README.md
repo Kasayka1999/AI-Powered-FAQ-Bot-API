@@ -75,7 +75,8 @@ Ensure `.env` contains valid credentials before running migrations. For producti
 │   ├── models/           # SQLModel definitions
 │   ├── services/         # Document ingestion, embeddings
 │   ├── utils/            # Utilities (hashing, jwt, s3)
-│   ├── config.py         # Environment-based configuration (app settings)
+│   ├── llm/              # LLM integration wrappers
+│   ├── config.py         # Environment-based configuration
 │   └── main.py           # FastAPI app entry point
 ├── Dockerfile
 ├── docker-compose / compose.yaml
