@@ -32,6 +32,7 @@ class Organization(OrganizationBase, table=True):
     documents: List["Documents"] = Relationship(back_populates="organization", sa_relationship_kwargs={"lazy": "selectin"})
     # separate relationship for chunks (document embeddings)
     chunks: List["DocumentChunk"] = Relationship(back_populates="organization", sa_relationship_kwargs={"lazy": "selectin"})
+    logs: List["AIAuditLogs"] = Relationship(back_populates="organization", sa_relationship_kwargs={"lazy": "selectin"})
 
 class OrganizationCreate(SQLModel):
     organization_name: str
@@ -41,5 +42,6 @@ class OrganizationDelete(OrganizationCreate):
 
 
 
-
-from app.models.documents import DocumentChunk, Documents #fix mapping error
+# mapping 
+from app.models.ai_audit_logs import AIAuditLogs
+from app.models.documents import DocumentChunk, Documents 
