@@ -1,4 +1,4 @@
-FROM python:3.12
+FROM python:3.12-slim
 
 WORKDIR /app
 
@@ -13,4 +13,6 @@ RUN python -m nltk.downloader punkt
 
 COPY . .
 
-ENTRYPOINT [ "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000" ]
+# Render sets $PORT; default to 8000 for local runs
+# Prefer CMD so Render can override if needed
+CMD [ "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "10000" ]

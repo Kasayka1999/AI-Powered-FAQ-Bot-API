@@ -21,6 +21,7 @@ async def lifespan_handler(app: FastAPI):
     yield
 
 app = FastAPI(
+    title="AI-Powered FAQ Bot API",
     # Server start/stop listener
     lifespan=lifespan_handler,
 )
@@ -37,3 +38,14 @@ def get_scalar_docs():
         openapi_url=app.openapi_url,
         title="Scalar API",
     )
+
+
+@app.get("/")
+def root():
+    # Nice for quick sanity checks and to reduce 404s on "/"
+    return {"ok": True, "docs": "/docs", "health": "/healthz"}
+
+
+@app.get("/healthz", include_in_schema=False)
+def healthz():
+    return {"status": "ok"}
