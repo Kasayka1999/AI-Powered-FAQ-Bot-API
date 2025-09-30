@@ -5,11 +5,11 @@ from sqlmodel import SQLModel
 from app.config import db_settings
 
 # Create a database engine to connect with database
+# ensure db_settings.POSTGRES_URL is postgresql+asyncpg://... or plain but we'll force ssl here
 engine = create_async_engine(
-    # database type/dialect and file name
     url=db_settings.POSTGRES_URL,
-    # Log sql queries
     echo=True,
+    #connect_args={"ssl": True},  # force TLS for asyncpg
 )
 
 
